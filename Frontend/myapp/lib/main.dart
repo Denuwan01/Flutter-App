@@ -6,6 +6,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -38,9 +40,9 @@ class _LoginPageState extends State<LoginPage> {
 
   void _login() {
     if (_formKey.currentState!.validate()) {
-      // Logic here
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Logging in...')),
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const MainPage()),
       );
     }
   }
@@ -158,7 +160,11 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text('Login', style: TextStyle(fontSize: 16)),
+                    child: const Text(
+                      'Login',
+                      style: TextStyle(
+                          fontSize: 16, color: Colors.white), // White text
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -200,6 +206,19 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
+    );
+  }
+}
+
+// Main Page after login
+class MainPage extends StatelessWidget {
+  const MainPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Main Page')),
+      body: const Center(child: Text('Welcome to the Main Page!')),
     );
   }
 }
