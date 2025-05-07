@@ -1,4 +1,6 @@
+// main.dart
 import 'package:flutter/material.dart';
+import 'profile.dart'; // Ensure this file exists with a ProfilePage widget
 
 void main() {
   runApp(const MyApp());
@@ -42,15 +44,16 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   List<Product> products = [
     Product(
-        name: 'Burger', price: 5.0, imagePath: 'assets/images/picture_1.png'),
+        name: 'Burger', price: 50.00, imagePath: 'assets/images/picture_1.png'),
     Product(
-        name: 'Fries', price: 3.0, imagePath: 'assets/images/picture_2.png'),
-    Product(name: 'Coke', price: 2.0, imagePath: 'assets/images/picture_3.png'),
+        name: 'Fries', price: 30.50, imagePath: 'assets/images/picture_2.png'),
     Product(
-        name: 'Pizza', price: 8.0, imagePath: 'assets/images/picture_4.png'),
+        name: 'Coke', price: 20.75, imagePath: 'assets/images/picture_3.png'),
+    Product(
+        name: 'Pizza', price: 80.25, imagePath: 'assets/images/picture_4.png'),
     Product(
         name: 'Ice Cream',
-        price: 4.0,
+        price: 40.60,
         imagePath: 'assets/images/picture_5.png'),
   ];
 
@@ -59,9 +62,7 @@ class _MainPageState extends State<MainPage> {
     if (ordered.isNotEmpty) {
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (context) => BillPage(orderList: ordered),
-        ),
+        MaterialPageRoute(builder: (context) => BillPage(orderList: ordered)),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -73,17 +74,9 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const CustomDrawer(),
+      drawer: CustomDrawer(context: context),
       appBar: AppBar(
         title: const Text('Food Menu'),
-        actions: [
-          Builder(
-            builder: (context) => IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () => Scaffold.of(context).openDrawer(),
-            ),
-          ),
-        ],
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -97,7 +90,6 @@ class _MainPageState extends State<MainPage> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          const SizedBox(height: 10),
           Container(
             height: 150,
             color: Colors.grey[300],
@@ -123,7 +115,7 @@ class _MainPageState extends State<MainPage> {
                 title: Text(product.name,
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 16)),
-                subtitle: Text('\$${product.price.toStringAsFixed(2)}'),
+                subtitle: Text('Rs. ${product.price.toStringAsFixed(2)}'),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -133,7 +125,7 @@ class _MainPageState extends State<MainPage> {
                           if (product.quantity > 0) product.quantity--;
                         });
                       },
-                      icon: const Icon(Icons.remove_circle_outline),
+                      icon: const Icon(Icons.remove),
                     ),
                     Text('${product.quantity}'),
                     IconButton(
@@ -142,13 +134,20 @@ class _MainPageState extends State<MainPage> {
                           product.quantity++;
                         });
                       },
-                      icon: const Icon(Icons.add_circle_outline),
+                      icon: const Icon(Icons.add),
                     ),
                   ],
                 ),
               ),
             );
-          }).toList(),
+          }),
+          const SizedBox(height: 20),
+          const Center(
+            child: Text(
+              'Thank you for visiting!',
+              style: TextStyle(color: Colors.grey, fontSize: 14),
+            ),
+          )
         ],
       ),
       bottomNavigationBar: Padding(
@@ -170,34 +169,38 @@ class _MainPageState extends State<MainPage> {
 
 class BillPage extends StatelessWidget {
   final List<Product> orderList;
-
   const BillPage({super.key, required this.orderList});
 
-  double _calculateTotal() {
-    return orderList.fold(0, (sum, item) => sum + (item.price * item.quantity));
-  }
+  double _calculateTotal() =>
+      orderList.fold(0, (sum, item) => sum + (item.price * item.quantity));
 
   @override
   Widget build(BuildContext context) {
     double total = _calculateTotal();
+    double tax = total * 0.05;
+    double grandTotal = total + tax;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Order Bill')),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Your Order Receipt',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
+            const Text('Burger Queen Pvt Ltd',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+            const Text('123, Main Street, Colombo, Sri Lanka'),
+            const Text('Tel: +94 11 123 4567\n'),
+            Text('Bill No: #${DateTime.now().millisecondsSinceEpoch}'),
+            Text('Invoice No: INV${DateTime.now().millisecondsSinceEpoch}\n'),
             Table(
               border: TableBorder.all(),
               columnWidths: const {
-                0: FlexColumnWidth(3),
-                1: FlexColumnWidth(2),
-                2: FlexColumnWidth(2),
+                0: FlexColumnWidth(1),
+                1: FlexColumnWidth(3),
+                2: FlexColumnWidth(1),
+                3: FlexColumnWidth(2),
+                4: FlexColumnWidth(2),
               },
               children: [
                 const TableRow(
@@ -205,70 +208,73 @@ class BillPage extends StatelessWidget {
                   children: [
                     Padding(
                       padding: EdgeInsets.all(8),
-                      child: Text('Product',
+                      child: Text('No.', style: TextStyle(color: Colors.white)),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(8),
+                      child: Text('Description',
                           style: TextStyle(color: Colors.white)),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(8),
+                      child: Text('Qty', style: TextStyle(color: Colors.white)),
                     ),
                     Padding(
                       padding: EdgeInsets.all(8),
                       child:
-                          Text('Price', style: TextStyle(color: Colors.white)),
+                          Text('Rate', style: TextStyle(color: Colors.white)),
                     ),
                     Padding(
                       padding: EdgeInsets.all(8),
-                      child: Text('Quantity',
-                          style: TextStyle(color: Colors.white)),
+                      child:
+                          Text('Amount', style: TextStyle(color: Colors.white)),
                     ),
                   ],
                 ),
-                ...orderList.map((item) {
+                ...orderList.asMap().entries.map((entry) {
+                  int index = entry.key + 1;
+                  Product item = entry.value;
                   return TableRow(children: [
                     Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text(item.name),
-                    ),
+                        padding: const EdgeInsets.all(8),
+                        child: Text('$index')),
                     Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text('\$${item.price.toStringAsFixed(2)}'),
-                    ),
+                        padding: const EdgeInsets.all(8),
+                        child: Text(item.name)),
                     Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text('${item.quantity}'),
-                    ),
+                        padding: const EdgeInsets.all(8),
+                        child: Text('${item.quantity}')),
+                    Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Text('Rs. ${item.price.toStringAsFixed(2)}')),
+                    Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Text(
+                            'Rs. ${(item.price * item.quantity).toStringAsFixed(2)}')),
                   ]);
-                }).toList(),
+                }),
               ],
             ),
             const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                const Text(
-                  'Total: ',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  '\$${total.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.teal),
-                ),
-              ],
+            Align(
+              alignment: Alignment.centerRight,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text('Total: Rs. ${total.toStringAsFixed(2)}'),
+                  Text('Tax (5%): Rs. ${tax.toStringAsFixed(2)}'),
+                  Text(
+                    'Grand Total: Rs. ${grandTotal.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.teal),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 30),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                color: Colors.grey[100],
-              ),
-              child: Text(
-                'Receipt ID: #ORD${DateTime.now().millisecondsSinceEpoch}\n'
-                'Thank you for your order!\n'
-                'Please show this receipt to the cashier.',
-                style: const TextStyle(fontSize: 15),
-              ),
+            const Align(
+              alignment: Alignment.bottomRight,
+              child: Text('Signature: ____________'),
             ),
           ],
         ),
@@ -278,34 +284,45 @@ class BillPage extends StatelessWidget {
 }
 
 class CustomDrawer extends StatelessWidget {
-  const CustomDrawer({super.key});
+  final BuildContext context;
+  const CustomDrawer({super.key, required this.context});
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
-        children: const [
-          DrawerHeader(
+        children: [
+          const DrawerHeader(
             decoration: BoxDecoration(
               gradient:
                   LinearGradient(colors: [Colors.teal, Colors.tealAccent]),
             ),
-            child: Text(
-              'Menu',
-              style: TextStyle(fontSize: 24, color: Colors.white),
-            ),
+            child: Text('Menu',
+                style: TextStyle(fontSize: 24, color: Colors.white)),
           ),
           ListTile(
-            leading: Icon(Icons.home),
-            title: Text('Home'),
+            leading: const Icon(Icons.home),
+            title: const Text('Home'),
+            onTap: () {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => const MainPage()));
+            },
           ),
+          /*ListTile(
+            leading: const Icon(Icons.person),
+            title: const Text('Profile'),
+            onTap: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => const ProfilePage()));
+            },
+          ),*/
           ListTile(
-            leading: Icon(Icons.info),
-            title: Text('About'),
-          ),
-          ListTile(
-            leading: Icon(Icons.logout),
-            title: Text('Logout'),
+            leading: const Icon(Icons.logout),
+            title: const Text('Logout'),
+            onTap: () {
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (_) => const MainPage()));
+            },
           ),
         ],
       ),
