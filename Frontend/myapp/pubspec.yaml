@@ -10,8 +10,8 @@ dependencies:
   flutter:
     sdk: flutter
   image_picker: ^1.0.0
-  shared_preferences: ^2.2.2 # Or the latest stable version
-  path_provider: ^2.1.2 # Or the latest stable version
+  shared_preferences: 2.0.15 # Or a known stable version
+  path_provider: 2.0.8 # Or a known stable version
 
   # Image picker for selecting profile picture
   image_picker: ^0.8.7+4

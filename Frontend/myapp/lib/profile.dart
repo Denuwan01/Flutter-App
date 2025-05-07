@@ -59,7 +59,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       phoneController.text = prefs.getString('phone') ?? "";
       String? imagePath = prefs.getString('profileImagePath');
       _profileImage = File(imagePath);
-        });
+    });
   }
 
   Future<void> _saveProfile() async {
