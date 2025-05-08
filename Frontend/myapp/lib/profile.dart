@@ -1,9 +1,7 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:path/path.dart';
 
 class UserProfilePage extends StatefulWidget {
   const UserProfilePage({super.key});
@@ -14,80 +12,30 @@ class UserProfilePage extends StatefulWidget {
 
 class _UserProfilePageState extends State<UserProfilePage> {
   File? _profileImage;
-  final picker = ImagePicker();
+  final ImagePicker _picker = ImagePicker();
 
-  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController nameController =
+      TextEditingController(text: "John Doe");
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    _loadProfile();
-  }
-
   Future<void> _pickImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      File imageTemp = File(pickedFile.path);
-      final savedImage = await _saveImageLocally(imageTemp);
       setState(() {
-        _profileImage = savedImage;
+        _profileImage = File(pickedFile.path);
       });
     }
   }
 
-  Future<File> _saveImageLocally(File image) async {
-    final appDir = await getApplicationDocumentsDirectory();
-    final fileName = basename(image.path);
-    final savedImage = await image.copy('${appDir.path}/$fileName');
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('profileImagePath', savedImage.path);
-    return savedImage;
-  }
+  void _saveProfile() {
+    String name = nameController.text.trim();
+    String email = emailController.text.trim();
+    String phone = phoneController.text.trim();
 
-  bool isValidEmail(String email) =>
-      RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$").hasMatch(email);
-
-  bool isValidPhone(String phone) => RegExp(r"^[0-9]{10,}$").hasMatch(phone);
-
-  Future<void> _loadProfile() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      usernameController.text = prefs.getString('username') ?? "JohnDoe";
-      emailController.text = prefs.getString('email') ?? "";
-      phoneController.text = prefs.getString('phone') ?? "";
-      String? imagePath = prefs.getString('profileImagePath');
-      _profileImage = File(imagePath);
-    });
-  }
-
-  Future<void> _saveProfile() async {
-    final email = emailController.text;
-    final phone = phoneController.text;
-    final username = usernameController.text;
-
-    if (email.isNotEmpty && !isValidEmail(email)) {
-      _showMessage("Invalid email address.");
-      return;
-    }
-
-    if (phone.isNotEmpty && !isValidPhone(phone)) {
-      _showMessage("Invalid phone number.");
-      return;
-    }
-
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('username', username);
-    prefs.setString('email', email);
-    prefs.setString('phone', phone);
-
-    _showMessage("Profile saved!");
-  }
-
-  void _showMessage(String message) {
-    ScaffoldMessenger.of(context as BuildContext).showSnackBar(
-      SnackBar(content: Text(message)),
+    // You can save these to a backend or state manager here
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Profile saved successfully!")),
     );
   }
 
@@ -95,9 +43,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('User Profile'),
-        centerTitle: true,
+        title: const Text("My Profile"),
         backgroundColor: Colors.teal,
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -117,26 +65,26 @@ class _UserProfilePageState extends State<UserProfilePage> {
             ),
             const SizedBox(height: 20),
             TextField(
-              controller: usernameController,
+              controller: nameController,
               decoration: const InputDecoration(
-                labelText: 'Username',
+                labelText: "Name",
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
             TextField(
               controller: emailController,
               decoration: const InputDecoration(
-                labelText: 'Email (optional)',
+                labelText: "Email (optional)",
                 border: OutlineInputBorder(),
               ),
               keyboardType: TextInputType.emailAddress,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
             TextField(
               controller: phoneController,
               decoration: const InputDecoration(
-                labelText: 'Phone (optional)',
+                labelText: "Phone (optional)",
                 border: OutlineInputBorder(),
               ),
               keyboardType: TextInputType.phone,
@@ -150,7 +98,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
               ),
               child: const Text("Save", style: TextStyle(fontSize: 16)),
-            )
+            ),
           ],
         ),
       ),
