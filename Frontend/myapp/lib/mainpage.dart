@@ -41,11 +41,15 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   List<Product> products = [
-    Product(name: 'Burger', price: 50.00, imagePath: 'assets/images/picture_1.png'),
-    Product(name: 'Fries', price: 30.50, imagePath: 'assets/images/picture_2.png'),
-    Product(name: 'Coke', price: 20.75, imagePath: 'assets/images/picture_3.png'),
-    Product(name: 'Pizza', price: 80.25, imagePath: 'assets/images/picture_4.png'),
-    Product(name: 'Ice Cream', price: 40.60, imagePath: 'assets/images/picture_5.png'),
+    Product(
+        name: 'Burger', price: 500.00, imagePath: 'assets/images/burger.png'),
+    Product(name: 'Fries', price: 300.00, imagePath: 'assets/images/fries.png'),
+    Product(name: 'Coke', price: 200.00, imagePath: 'assets/images/coke.png'),
+    Product(name: 'Pizza', price: 800.00, imagePath: 'assets/images/pizza.png'),
+    Product(
+        name: 'Ice Cream',
+        price: 240.00,
+        imagePath: 'assets/images/ice_cream.png'),
   ];
 
   void _submitOrder() {
@@ -65,7 +69,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: CustomDrawer(),
+      drawer: const CustomDrawer(),
       appBar: AppBar(
         title: const Text('Food Menu'),
         flexibleSpace: Container(
@@ -104,7 +108,8 @@ class _MainPageState extends State<MainPage> {
                   fit: BoxFit.cover,
                 ),
                 title: Text(product.name,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16)),
                 subtitle: Text('Rs. ${product.price.toStringAsFixed(2)}'),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -202,7 +207,8 @@ class BillPage extends StatelessWidget {
                     ),
                     Padding(
                       padding: EdgeInsets.all(8),
-                      child: Text('Description', style: TextStyle(color: Colors.white)),
+                      child: Text('Description',
+                          style: TextStyle(color: Colors.white)),
                     ),
                     Padding(
                       padding: EdgeInsets.all(8),
@@ -210,11 +216,13 @@ class BillPage extends StatelessWidget {
                     ),
                     Padding(
                       padding: EdgeInsets.all(8),
-                      child: Text('Rate', style: TextStyle(color: Colors.white)),
+                      child:
+                          Text('Rate', style: TextStyle(color: Colors.white)),
                     ),
                     Padding(
                       padding: EdgeInsets.all(8),
-                      child: Text('Amount', style: TextStyle(color: Colors.white)),
+                      child:
+                          Text('Amount', style: TextStyle(color: Colors.white)),
                     ),
                   ],
                 ),
@@ -222,11 +230,22 @@ class BillPage extends StatelessWidget {
                   int index = entry.key + 1;
                   Product item = entry.value;
                   return TableRow(children: [
-                    Padding(padding: const EdgeInsets.all(8), child: Text('$index')),
-                    Padding(padding: const EdgeInsets.all(8), child: Text(item.name)),
-                    Padding(padding: const EdgeInsets.all(8), child: Text('${item.quantity}')),
-                    Padding(padding: const EdgeInsets.all(8), child: Text('Rs. ${item.price.toStringAsFixed(2)}')),
-                    Padding(padding: const EdgeInsets.all(8), child: Text('Rs. ${(item.price * item.quantity).toStringAsFixed(2)}')),
+                    Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Text('$index')),
+                    Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Text(item.name)),
+                    Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Text('${item.quantity}')),
+                    Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Text('Rs. ${item.price.toStringAsFixed(2)}')),
+                    Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Text(
+                            'Rs. ${(item.price * item.quantity).toStringAsFixed(2)}')),
                   ]);
                 }),
               ],
@@ -269,7 +288,8 @@ class CustomDrawer extends StatelessWidget {
         children: [
           const DrawerHeader(
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [Colors.teal, Colors.tealAccent]),
+              gradient:
+                  LinearGradient(colors: [Colors.teal, Colors.tealAccent]),
             ),
             child: Text('Menu',
                 style: TextStyle(fontSize: 24, color: Colors.white)),
@@ -286,8 +306,8 @@ class CustomDrawer extends StatelessWidget {
             leading: const Icon(Icons.person),
             title: const Text('Profile'),
             onTap: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => const ProfilePage()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const ProfilePage()));
             },
           ),
           ListTile(

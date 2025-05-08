@@ -29,9 +29,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 
   void _saveProfile() {
-    String name = nameController.text.trim();
-    String email = emailController.text.trim();
-    String phone = phoneController.text.trim();
+    nameController.text.trim();
+    emailController.text.trim();
+    phoneController.text.trim();
 
     // You can save these to a backend or state manager here
     ScaffoldMessenger.of(context).showSnackBar(
