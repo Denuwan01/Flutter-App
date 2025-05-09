@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:myapp/main.dart';
 
 void main() {
   runApp(const MyApp());
@@ -316,11 +317,11 @@ class CustomDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (_) => const MyApp()),
+                MaterialPageRoute(builder: (_) => const LoginPage()),
                 (route) => false,
               );
             },
-          ),
+          )
         ],
       ),
     );
@@ -342,6 +343,10 @@ class _ProfilePageState extends State<ProfilePage> {
       TextEditingController(text: "John Doe");
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
+  final TextEditingController dobController = TextEditingController();
+
+  String? _selectedGender;
 
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -352,15 +357,32 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  Future<void> _selectDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime(2000),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null) {
+      dobController.text = "${picked.year}-${picked.month}-${picked.day}";
+    }
+  }
+
   void _saveProfile() {
     final name = nameController.text.trim();
     final email = emailController.text.trim();
     final phone = phoneController.text.trim();
+    final address = addressController.text.trim();
+    final dob = dobController.text.trim();
+    final gender = _selectedGender ?? "Not specified";
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          "Profile Saved:\nName: $name\nEmail: $email\nPhone: $phone",
+          "Profile Saved:\n"
+          "Name: $name\nEmail: $email\nPhone: $phone\n"
+          "Gender: $gender\nDOB: $dob\nAddress: $address",
         ),
         duration: const Duration(seconds: 3),
       ),
@@ -372,6 +394,8 @@ class _ProfilePageState extends State<ProfilePage> {
     nameController.dispose();
     emailController.dispose();
     phoneController.dispose();
+    addressController.dispose();
+    dobController.dispose();
     super.dispose();
   }
 
@@ -400,6 +424,8 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
             const SizedBox(height: 20),
+
+            // Name
             TextField(
               controller: nameController,
               decoration: const InputDecoration(
@@ -408,6 +434,8 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
             const SizedBox(height: 15),
+
+            // Email
             TextField(
               controller: emailController,
               decoration: const InputDecoration(
@@ -417,6 +445,8 @@ class _ProfilePageState extends State<ProfilePage> {
               keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 15),
+
+            // Phone
             TextField(
               controller: phoneController,
               decoration: const InputDecoration(
@@ -425,7 +455,52 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               keyboardType: TextInputType.phone,
             ),
+            const SizedBox(height: 15),
+
+            // Gender Dropdown
+            DropdownButtonFormField<String>(
+              decoration: const InputDecoration(
+                labelText: "Gender",
+                border: OutlineInputBorder(),
+              ),
+              value: _selectedGender,
+              items: ['Male', 'Female', 'Other']
+                  .map((gender) =>
+                      DropdownMenuItem(value: gender, child: Text(gender)))
+                  .toList(),
+              onChanged: (value) {
+                setState(() {
+                  _selectedGender = value;
+                });
+              },
+            ),
+            const SizedBox(height: 15),
+
+            // Date of Birth
+            TextField(
+              controller: dobController,
+              readOnly: true,
+              onTap: _selectDate,
+              decoration: const InputDecoration(
+                labelText: "Date of Birth",
+                border: OutlineInputBorder(),
+                suffixIcon: Icon(Icons.calendar_today),
+              ),
+            ),
+            const SizedBox(height: 15),
+
+            // Address
+            TextField(
+              controller: addressController,
+              decoration: const InputDecoration(
+                labelText: "Address",
+                border: OutlineInputBorder(),
+              ),
+              maxLines: 2,
+            ),
             const SizedBox(height: 30),
+
+            // Save Button
             ElevatedButton(
               onPressed: _saveProfile,
               style: ElevatedButton.styleFrom(

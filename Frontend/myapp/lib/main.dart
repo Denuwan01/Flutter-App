@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'mainpage.dart'; // Import your main page
+import 'mainpage.dart';
+import 'register_page.dart';
+// Import your main page
 
 void main() {
   runApp(const MyApp());
@@ -196,7 +198,11 @@ class _LoginPageState extends State<LoginPage> {
                     const Text("Don't have an account?"),
                     TextButton(
                       onPressed: () {
-                        // Navigate to register page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const RegisterPage()),
+                        );
                       },
                       child: const Text('Create one'),
                     ),
