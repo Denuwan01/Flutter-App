@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -29,14 +28,27 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 
   void _saveProfile() {
-    nameController.text.trim();
-    emailController.text.trim();
-    phoneController.text.trim();
+    final name = nameController.text.trim();
+    final email = emailController.text.trim();
+    final phone = phoneController.text.trim();
 
-    // You can save these to a backend or state manager here
+    // For now, we just show a snackbar. You can connect this to your backend or state management.
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Profile saved successfully!")),
+      SnackBar(
+        content: Text(
+          "Profile Saved:\nName: $name\nEmail: $email\nPhone: $phone",
+        ),
+        duration: const Duration(seconds: 3),
+      ),
     );
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    super.dispose();
   }
 
   @override

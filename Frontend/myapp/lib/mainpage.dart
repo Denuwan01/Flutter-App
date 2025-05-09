@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'profile.dart'; // Import your existing profile page
 
 void main() {
   runApp(const MyApp());
@@ -41,15 +42,12 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   List<Product> products = [
+    Product(name: 'Burger', price: 500.00, imagePath: 'assets/burger.png'),
+    Product(name: 'Fries', price: 300.00, imagePath: 'assets/fries.png'),
+    Product(name: 'Coke', price: 200.00, imagePath: 'assets/coke.png'),
+    Product(name: 'Pizza', price: 800.00, imagePath: 'assets/pizza.png'),
     Product(
-        name: 'Burger', price: 500.00, imagePath: 'assets/images/burger.png'),
-    Product(name: 'Fries', price: 300.00, imagePath: 'assets/images/fries.png'),
-    Product(name: 'Coke', price: 200.00, imagePath: 'assets/images/coke.png'),
-    Product(name: 'Pizza', price: 800.00, imagePath: 'assets/images/pizza.png'),
-    Product(
-        name: 'Ice Cream',
-        price: 240.00,
-        imagePath: 'assets/images/ice_cream.png'),
+        name: 'Ice Cream', price: 240.00, imagePath: 'assets/ice-cream.png'),
   ];
 
   void _submitOrder() {
@@ -87,11 +85,11 @@ class _MainPageState extends State<MainPage> {
         children: [
           Container(
             height: 150,
-            color: Colors.grey[300],
-            child: const Center(
-              child: Text(
-                'PLACE A BANNER HERE',
-                style: TextStyle(fontSize: 20, color: Colors.black54),
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/banner.jpg!bw700'),
+                fit: BoxFit.cover,
               ),
             ),
           ),
@@ -327,19 +325,15 @@ class CustomDrawer extends StatelessWidget {
   }
 }
 
-// Dummy Profile Page
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Profile")),
+      appBar: AppBar(title: const Text('Profile')),
       body: const Center(
-        child: Text(
-          'Welcome to your profile!',
-          style: TextStyle(fontSize: 24),
-        ),
+        child: Text('This is the Profile Page'),
       ),
     );
   }
