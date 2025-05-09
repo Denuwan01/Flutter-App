@@ -86,11 +86,11 @@ class _MainPageState extends State<MainPage> {
         padding: const EdgeInsets.all(16),
         children: [
           Container(
-            height: 150,
+            height: 250,
             width: double.infinity,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/banner.jpg!bw700'),
+                image: AssetImage('assets/banner.png'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -327,9 +327,6 @@ class CustomDrawer extends StatelessWidget {
   }
 }
 
-
-
-
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -444,4 +441,3 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
-
