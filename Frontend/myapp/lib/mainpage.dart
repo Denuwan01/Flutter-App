@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'profile.dart'; // Import your existing profile page
+
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 void main() {
   runApp(const MyApp());
@@ -325,16 +327,121 @@ class CustomDrawer extends StatelessWidget {
   }
 }
 
-class ProfilePage extends StatelessWidget {
+
+
+
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  File? _profileImage;
+  final ImagePicker _picker = ImagePicker();
+
+  final TextEditingController nameController =
+      TextEditingController(text: "John Doe");
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _profileImage = File(pickedFile.path);
+      });
+    }
+  }
+
+  void _saveProfile() {
+    final name = nameController.text.trim();
+    final email = emailController.text.trim();
+    final phone = phoneController.text.trim();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "Profile Saved:\nName: $name\nEmail: $email\nPhone: $phone",
+        ),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Profile')),
-      body: const Center(
-        child: Text('This is the Profile Page'),
+      appBar: AppBar(
+        title: const Text("My Profile"),
+        backgroundColor: Colors.teal,
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            GestureDetector(
+              onTap: _pickImage,
+              child: CircleAvatar(
+                radius: 60,
+                backgroundColor: Colors.teal[100],
+                backgroundImage:
+                    _profileImage != null ? FileImage(_profileImage!) : null,
+                child: _profileImage == null
+                    ? const Icon(Icons.camera_alt, size: 40, color: Colors.teal)
+                    : null,
+              ),
+            ),
+            const SizedBox(height: 20),
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                labelText: "Name",
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 15),
+            TextField(
+              controller: emailController,
+              decoration: const InputDecoration(
+                labelText: "Email (optional)",
+                border: OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.emailAddress,
+            ),
+            const SizedBox(height: 15),
+            TextField(
+              controller: phoneController,
+              decoration: const InputDecoration(
+                labelText: "Phone (optional)",
+                border: OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.phone,
+            ),
+            const SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: _saveProfile,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+              ),
+              child: const Text("Save", style: TextStyle(fontSize: 16)),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
+
