@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'mainpage.dart';
 import 'register_page.dart';
-// Import your main page
 
 void main() {
   runApp(const MyApp());
@@ -81,6 +80,13 @@ class _LoginPageState extends State<LoginPage> {
             key: _formKey,
             child: Column(
               children: [
+                // Logo image
+                Image.asset(
+                  'assets/MainLogo.png',
+                  height: 100,
+                ),
+                const SizedBox(height: 20),
+
                 const Text(
                   'Welcome Back!',
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
@@ -165,14 +171,14 @@ class _LoginPageState extends State<LoginPage> {
                       'Login',
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.white, // Make text white
+                        color: Colors.white,
                       ),
                     ),
                   ),
                 ),
                 const SizedBox(height: 20),
 
-                // Or
+                // Or Divider
                 const Row(
                   children: [
                     Expanded(child: Divider()),
