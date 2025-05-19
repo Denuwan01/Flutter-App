@@ -71,5 +71,10 @@ dependencies {
 }
 
 
-apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.gms.google-services' // Add this at the bottom
+
+dependencies {
+  implementation 'com.google.firebase:firebase-auth:22.3.0'
+}
+
 
