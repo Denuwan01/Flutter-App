@@ -73,7 +73,10 @@ dependencies {
 }
 
 
-apply plugin: 'com.google.gms.google-services' // Add this at the bottom
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services' 
+
+// ✅ This requires the classpath above
 
 
 
