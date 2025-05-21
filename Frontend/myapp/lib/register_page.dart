@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'mainpage.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -31,37 +29,15 @@ class _RegisterPageState extends State<RegisterPage> {
     setState(() => _obscureConfirm = !_obscureConfirm);
   }
 
-void _createAccount() async {
-  if (_formKey.currentState!.validate()) {
-    try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
-
-      // Navigate to MainPage after successful registration
+  void _createAccount() {
+    if (_formKey.currentState!.validate()) {
+      // No Firebase logic here, just navigate to MainPage
       Navigator.pushReplacement(
-        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(builder: (context) => const MainPage()),
       );
-    } on FirebaseAuthException catch (e) {
-      String message = 'An error occurred';
-      if (e.code == 'email-already-in-use') {
-        message = 'This email is already in use';
-      } else if (e.code == 'weak-password') {
-        message = 'Password is too weak';
-      } else if (e.code == 'invalid-email') {
-        message = 'Invalid email address';
-      }
-
-      // Show error
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
     }
   }
-}
-
 
   @override
   void dispose() {
