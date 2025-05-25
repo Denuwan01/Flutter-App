@@ -4,6 +4,16 @@ import 'register_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+
+// ✅ Define GoogleSignIn instance with Web Client ID for web
+final GoogleSignIn googleSignIn = GoogleSignIn(
+  clientId: kIsWeb
+      ? '395955687433-5ofl19415bv674u6omk1rdk07beesolf.apps.googleusercontent.com'
+      : null,
+);
+// ✅ ADDED
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -72,6 +82,35 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  // ✅ Google Sign-In function
+  Future<void> _signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+
+      if (googleAuth == null) return;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+
+      Navigator.pushReplacement(
+        // ignore: use_build_context_synchronously
+        context,
+        MaterialPageRoute(builder: (context) => const MainPage()),
+      );
+    } catch (e) {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Google Sign-In Failed: $e')),
+      );
+    }
+  }
+
   @override
   void dispose() {
     emailController.dispose();
@@ -79,11 +118,11 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  Widget _buildSocialButton(String label, IconData icon, Color color) {
+  // ✅ Updated to take onPressed function
+  Widget _buildSocialButton(
+      String label, IconData icon, Color color, VoidCallback onPressed) {
     return OutlinedButton.icon(
-      onPressed: () {
-        // Social sign-in logic here
-      },
+      onPressed: onPressed,
       icon: Icon(icon, color: color),
       label: Text(label, style: TextStyle(color: color)),
       style: OutlinedButton.styleFrom(
@@ -105,11 +144,7 @@ class _LoginPageState extends State<LoginPage> {
             key: _formKey,
             child: Column(
               children: [
-                // Logo image
-                Image.asset(
-                  'assets/MainLogo.png',
-                  height: 100,
-                ),
+                Image.asset('assets/MainLogo.png', height: 100),
                 const SizedBox(height: 20),
 
                 const Text(
@@ -117,13 +152,10 @@ class _LoginPageState extends State<LoginPage> {
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 12),
-                const Text(
-                  'Login to your account',
-                  style: TextStyle(color: Colors.grey),
-                ),
+                const Text('Login to your account',
+                    style: TextStyle(color: Colors.grey)),
                 const SizedBox(height: 30),
 
-                // Email Field
                 TextFormField(
                   controller: emailController,
                   decoration: InputDecoration(
@@ -142,7 +174,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 16),
 
-                // Password Field
                 TextFormField(
                   controller: passwordController,
                   obscureText: _obscureText,
@@ -168,7 +199,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 12),
 
-                // Forgot Password
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
@@ -180,7 +210,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 10),
 
-                // Login Button
                 SizedBox(
                   width: double.infinity,
                   height: 50,
@@ -194,16 +223,12 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     child: const Text(
                       'Login',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                      ),
+                      style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
                 ),
                 const SizedBox(height: 20),
 
-                // Or Divider
                 const Row(
                   children: [
                     Expanded(child: Divider()),
@@ -216,13 +241,16 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 20),
 
-                // Google Button (UI only)
+                // ✅ Google Sign-In button
                 _buildSocialButton(
-                    'Login with Google', Icons.g_mobiledata, Colors.red),
+                  'Login with Google',
+                  Icons.g_mobiledata,
+                  Colors.red,
+                  _signInWithGoogle,
+                ),
 
                 const SizedBox(height: 20),
 
-                // Create Account Link
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
